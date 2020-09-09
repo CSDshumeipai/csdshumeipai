@@ -1,0 +1,283 @@
+#currentProject {
+    margin-right: 10px;
+}
+
+.blackColor {
+    color: #000000;;
+}
+
+.cPointer {
+    cursor: pointer;
+}
+
+.chronologicalView
+{
+    height: 550px;
+    border: 1px solid #E7E7E7;
+    border-radius: 4px;
+}
+
+#tracks
+{
+    height: 501px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.trackInfo {
+    float: left;
+    width: 70px;
+}
+
+.trackView {
+    float: left;
+    width: 730px;
+}
+
+#videoView {
+    overflow-x: hidden;
+}
+
+#audioView {
+    overflow-x: auto;
+}
+
+.singleTrack
+{
+    height: 105px;
+    border-bottom: 1px solid #dcdcdc;
+}
+
+.valuesTrack
+{
+    float: left;
+    margin-top: 10px;
+}
+
+.canvasTrack {
+    display: block;
+}
+
+.time
+{
+    float: left;
+    position: relative;
+    font-weight: bold;
+}
+
+.timeTrack
+{
+    width: 100%;
+    height: 30px;
+    padding-left: 70px;
+    margin-top: 15px;
+    border-bottom: 1px solid #E7E7E7;
+}
+
+.timeLeft
+{
+    float: left;
+}
+
+.timeRight
+{
+    float: right;
+}
+
+.textViewEditor
+{
+    text-align: center;
+}
+
+.sizeViewEditorTrack
+{
+    width: 1000px;
+}
+
+.posMinVolume
+{
+    float: left;
+}
+
+.posMaxVolume
+{
+    float: right;
+}
+
+.zoom
+{
+    margin-left: 20px;
+    display: inline-block;
+}
+
+.player
+{
+    width: 200px;
+}
+
+#progressPlayerOuter
+{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#contentPlayer
+{
+    width: 100px;
+    height: 100px;
+    background-color: #000000;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.selectedFile
+{
+   border:  1px solid red;
+}
+
+#divListFile
+{
+    height: 180px;
+    overflow-y: auto;
+}
+
+.thumbnailImage
+{
+    margin-left: 5px;
+    margin-top: 5px;
+    border: 1px solid black;
+}
+
+.trackElement
+{
+    /*width: 2000px;*/
+    border: 1px solid blue;
+    height: 80%;
+    margin-left: 0;
+    resize: none;
+    overflow: hidden;
+    display: inherit;
+}
+
+.toolbar {
+    position: absolute;
+    bottom: 15px;
+}
+
+.listFiles
+{
+    height: 520px;
+    margin-top: 15px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.filesList
+{
+    height: 550px;
+    margin-left: 10px;
+    min-width: 22%;
+    border: 1px solid #E7E7E7;
+    border-radius: 4px;
+}
+
+.center
+{
+    text-align: center;
+}
+
+.marginauto
+{
+    margin: auto;
+}
+
+.strong
+{
+    font-weight: bold;
+}
+
+.titleSize
+{
+    font-size: 20px;
+}
+
+.previewFileContent
+{
+    width: auto;
+    height: 100px;
+    border: 1px solid #000000;
+}
+
+.previewAudioFileContent
+{
+    width: 400px;
+    height: auto;
+    border: 1px solid #000000;
+}
+
+.titleTableProperties {
+    vertical-align: text-top;
+    font-weight: bold;
+}
+
+.propertiesDivText
+{
+    height: 350px;
+}
+
+#canvasElementProperties {
+    border: 1px solid #cbcbcb;
+}
+
+#textElement {
+    border: 1px solid #E7E7E7;
+    border-radius: 4px;
+}
+
+#nameText {
+    width: 95px;
+}
+
+#sizeText {
+    width: 75px;
+}
+
+#colorText {
+    width: 50px;
+    margin-right: 20px;
+}
+
+#colorElementP {
+    width: 75px;
+}
+
+.textNote {
+    font-style: italic;
+    font-size: 10px;
+    display: block;
+    margin-top: 5px;
+}
+
+#console {
+    height: 200px;
+    overflow-y: auto;
+}
+
+footer {
+    margin-top: 590px;
+    color: #777;
+}
+
+body
+{
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.renderStats
+{
+    display: none;
+}
