@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<meta charset="utf-8">
+
+<head>
+    <link rel="stylesheet" href="converterpagecss.css">
+	<link rel="shortcut icon" href="https://csdshumeipai.ga/assets/images/dd.png" type="image/x-icon">
+    <title>守望先锋 MIDI 地图工坊转换</title>
+</head>
+
+<body>
+    <div class="center">
+        <a href="https://github.com/ScroogeD2/owmidiconverter">
+            <h1>守望先锋 MIDI 地图工坊转换</h1>
+        </a>
+
+        <div>
+            <p>⬆ 上传 MIDI 文件
+                <input type="file" id="file-input" accept="audio/midi">
+            </p>
+        </div>
+
+        <p>🖱 将鼠标悬停在文本上以获取更多信息。<br>
+        </p>
+
+        <div class="options">
+            <div class="tooltipWrapper">
+                <div class="tooltip">⏱ 开始于:
+                    <span class="tooltipText">❕ 脚本开始读取MIDI文件时歌曲中音符的时间（秒）。设置为0以外的值以开始从文件的不同部分读取。转换器将自动确定它可以适合生成的脚本的最大数据量。</span>
+                </div>
+            </div>
+            <input class="textInput" type="text" id="startTimeInput" value="0">
+
+            <div class="tooltipWrapper">
+                <div class="tooltip">🤖 演奏机器人数量:
+                    <span class="tooltipText">❕ 演奏的机器人数量设置在6到11之间，添加更多的机器人可以提高演奏效果，但是这将会减少房间内玩家的数量。</span>
+                </div>
+            </div>
+            <input class="textInput" type="text" id="voicesInput" value="6">
+
+            <div class="tooltipWrapper">
+                <div class="tooltip">🔤 语言:
+                    <span class="tooltipText">❕ 生成地图工坊脚本的语言，选择与游戏的文字语言相同的语言，否则无法导入脚本。</span>
+                </div>
+            </div>
+            <select class="dropdownInput" id="languageInput">
+                <option selected value="zh-CN">简体中文</option>
+                <option value="es-ES">Español (EU)</option>
+                <option value="es-MX">Español (AL)</option>
+                <option value="it-IT">Italiano</option>
+                <option value="ru-RU">Русский</option>
+                <option value="pl-PL">Polski</option>
+                <option value="fr-FR">Français</option>
+                <option value="de-DE">Deutsch</option>
+                <option value="pt-BR">Português</option>
+                <option value="ja-JP">日本語</option>
+                <option value="ko-KR">한국어</option>
+                <option value="zh-TW">繁體中文</option>
+                <option value="zh-CN">简体中文</option>
+            </select>
+        </div>
+
+        <button id="collapseButton" onclick="collapseElementAfter(this)">更多设置 ➕</button>
+        <div class="collapsible">
+
+            <div class="options">
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 生成完整的游戏模式设置
+                        <span class="tooltipText">❕ 如果未选中，则仅生成包含歌曲数据的研讨会规则。</span>
+                    </div>
+                </div>
+                <input class="checkboxInput" type="checkbox" id="includeFullSettingsCheckBox" checked>
+
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 机器人隐身
+                        <span class="tooltipText">❕ 演奏歌曲的机器人隐身。</span>
+                    </div>
+                </div>
+                <input class="checkboxInput" type="checkbox" id="botsInvisibleCheckbox" checked>
+
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 限制玩家数量
+                        <span class="tooltipText">❕ 根据播放歌曲的机器人数量从游戏中限制玩家的数量，禁用此功能可能导致机器人在新玩家加入时消失。</span>
+                    </div>
+                </div>
+                <input class="checkboxInput" type="checkbox" id="restrictSlotsCheckbox" checked>
+
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 选择演奏钢琴位置
+                        <span class="tooltipText">❕ 选择机器人将在巴黎演奏音乐的钢琴位置。</span>
+                    </div>
+                </div>
+                <select class="dropdownInput" id="pianoSelectInput">
+                    <option value="pointA">A点</option>
+                    <option selected value="pointB">B点</option>
+                </select>
+
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 禁用玩家所有技能
+                        <span class="tooltipText">❕ 勾选此选项可解决在演奏时玩家滥用技能导致的声音干扰。</span>
+                    </div>
+                </div>
+                <input class="checkboxInput" type="checkbox" id="restrictAbilitiesCheckbox">
+                
+                <div class="tooltipWrapper">
+                    <div class="tooltip">⚙ 传送滥用技能的玩家
+                        <span class="tooltipText">❕ 当房主按下Crouch（Ctrl）+ Reload（R）时，他瞄准的玩家将被传送出30秒。</span>
+                    </div>
+                </div>
+                <input class="checkboxInput" type="checkbox" id="includeBanSystemCheckbox">
+
+            </div>
+        </div>
+
+        <button onclick="loadFile();">▶ 开始转换</button>
+
+        <p>📃 脚本信息:</p>
+        <textarea readonly id="scriptOutput-textarea" rows="7"></textarea>
+
+        <p>❕ 复制工坊代码并将其粘贴到 <a href="https://i.imgur.com/OqkaGqe.png">“自定义游戏设置。</a>（仅限PC）</p>
+        
+        <button id="copyRuleButton" onclick="copyText('ruleOutput-textarea')">📄 复制代码到剪切板</button>
+
+        <!-- todo: fix textarea lag issues with Chrome -->
+        <textarea readonly id="ruleOutput-textarea" rows="5" wrap="off" 
+                  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        <p></p>
+    </div>
+
+    <!-- Import OverPy for language translations -->
+    <script src="overpy/utils/other.js"></script>
+
+    <script src="overpy/data/opy/constants.js"></script>
+    <script src="overpy/data/opy/internalFunctions.js"></script>
+    <script src="overpy/data/opy/functions.js"></script>
+    <script src="overpy/data/opy/keywords.js"></script>
+    <script src="overpy/data/opy/memberFunctions.js"></script>
+    <script src="overpy/data/opy/preprocessing.js"></script>
+    <script src="overpy/data/actions.js"></script>
+    <script src="overpy/data/values.js"></script>
+    <script src="overpy/data/maps.js"></script>
+    <script src="overpy/data/heroes.js"></script>
+    <script src="overpy/data/gamemodes.js"></script>
+    <script src="overpy/data/constants.js"></script>
+    <script src="overpy/data/other.js"></script>
+    <script src="overpy/data/customGameSettings.js"></script>
+    <script src="overpy/data/opy/annotations.js"></script>
+    
+    <script src="overpy/globalVars.js"></script>
+    
+    <script src="overpy/utils/ast.js"></script>
+    <script src="overpy/utils/types.js"></script>
+    <script src="overpy/utils/compilation.js"></script>
+    <script src="overpy/utils/decompilation.js"></script>
+    <script src="overpy/utils/file.js"></script>
+    <script src="overpy/utils/logging.js"></script>
+    <script src="overpy/utils/optimization.js"></script>
+    <script src="overpy/utils/strings.js"></script>
+    <script src="overpy/utils/translation.js"></script>
+    <script src="overpy/utils/varNames.js"></script>
+    <script src="overpy/utils/tokens.js"></script>
+    
+    <script src="overpy/decompiler/decompileTest.js"></script>
+    <script src="overpy/decompiler/workshopToAst.js"></script>
+    <script src="overpy/decompiler/astToOpy.js"></script>
+    <script src="overpy/decompiler/decompiler.js"></script>
+    
+    <script src="overpy/compiler/obfuscation.js"></script>
+    <script src="overpy/compiler/functions/__add__.js"></script>
+    <script src="overpy/compiler/functions/__and__.js"></script>
+    <script src="overpy/compiler/functions/__append__.js"></script>
+    <script src="overpy/compiler/functions/__array__.js"></script>
+    <script src="overpy/compiler/functions/__arraySlice__.js"></script>
+    <script src="overpy/compiler/functions/__assignTo__.js"></script>
+    <script src="overpy/compiler/functions/__button__.js"></script>
+    <script src="overpy/compiler/functions/__del__.js"></script>
+    <script src="overpy/compiler/functions/__dict__.js"></script>
+    <script src="overpy/compiler/functions/__distanceTo__.js"></script>
+    <script src="overpy/compiler/functions/__divide__.js"></script>
+    <script src="overpy/compiler/functions/__doWhile__.js"></script>
+    <script src="overpy/compiler/functions/__elif__.js"></script>
+    <script src="overpy/compiler/functions/__else__.js"></script>
+    <script src="overpy/compiler/functions/__equals__.js"></script>
+    <script src="overpy/compiler/functions/__for__.js"></script>
+    <script src="overpy/compiler/functions/__format__.js"></script>
+    <script src="overpy/compiler/functions/__filteredArray__.js"></script>
+    <script src="overpy/compiler/functions/__gamemode__.js"></script>
+    <script src="overpy/compiler/functions/__greaterThan__.js"></script>
+    <script src="overpy/compiler/functions/__greaterThanOrEquals__.js"></script>
+    <script src="overpy/compiler/functions/__hero__.js"></script>
+    <script src="overpy/compiler/functions/__if__.js"></script>
+    <script src="overpy/compiler/functions/__ifThenElse__.js"></script>
+    <script src="overpy/compiler/functions/__indexOfArrayValue__.js"></script>
+    <script src="overpy/compiler/functions/__inequals__.js"></script>
+    <script src="overpy/compiler/functions/__lastOf__.js"></script>
+    <script src="overpy/compiler/functions/__lessThan__.js"></script>
+    <script src="overpy/compiler/functions/__lessThanOrEquals__.js"></script>
+    <script src="overpy/compiler/functions/__map__.js"></script>
+    <script src="overpy/compiler/functions/__mappedArray__.js"></script>
+    <script src="overpy/compiler/functions/__modulo__.js"></script>
+    <script src="overpy/compiler/functions/__multiply__.js"></script>
+    <script src="overpy/compiler/functions/__negate__.js"></script>
+    <script src="overpy/compiler/functions/__not__.js"></script>
+    <script src="overpy/compiler/functions/__or__.js"></script>
+    <script src="overpy/compiler/functions/__raiseToPower__.js"></script>
+    <script src="overpy/compiler/functions/__remove__.js"></script>
+    <script src="overpy/compiler/functions/__rule__.js"></script>
+    <script src="overpy/compiler/functions/__skip__.js"></script>
+    <script src="overpy/compiler/functions/__subtract__.js"></script>
+    <script src="overpy/compiler/functions/__switch__.js"></script>
+    <script src="overpy/compiler/functions/__valueInArray__.js"></script>
+    <script src="overpy/compiler/functions/__while__.js"></script>
+    <script src="overpy/compiler/functions/__xComponentOf__.js"></script>
+    <script src="overpy/compiler/functions/__yComponentOf__.js"></script>
+    <script src="overpy/compiler/functions/__zComponentOf__.js"></script>
+    <script src="overpy/compiler/functions/all.js"></script>
+    <script src="overpy/compiler/functions/any.js"></script>
+    <script src="overpy/compiler/functions/break.js"></script>
+    <script src="overpy/compiler/functions/continue.js"></script>
+    <script src="overpy/compiler/functions/createBeam.js"></script>
+    <script src="overpy/compiler/functions/disableInspector.js"></script>
+    <script src="overpy/compiler/functions/enableInspector.js"></script>
+    <script src="overpy/compiler/functions/print.js"></script>
+    <script src="overpy/compiler/functions/sorted.js"></script>
+    <script src="overpy/compiler/functions/vect.js"></script>
+    
+    <script src="overpy/compiler/tokenizer.js"></script>
+    <script src="overpy/compiler/astParser.js"></script>
+    <script src="overpy/compiler/astToWorkshop.js"></script>
+    <script src="overpy/compiler/parser.js"></script>
+    <script src="overpy/compiler/compiler.js"></script>
+    <script src="overpy/data/localizedStrings.js"></script>
+    <!-- End of OverPy imports -->
+    
+    <!-- todo: only import convertMidi and CONVERTER_SETTINGS_INFO instead of the whole file -->
+    <script type="text/javascript" src="src/owmidiparser.js"></script>
+    <script type="text/javascript" src="src/workshopScript_en-US.js"></script>
+
+    <script type="text/javascript" src="https://unpkg.com/@tonejs/midi"></script>
+
+    <script>
+        "use strict";
+
+        const ERRORS = {
+            MIDI_CONVERTER_ERROR: "Error: the MIDI file could not be converted.\n",
+            TRANSLATION_ERROR: "Error: the generated workshop script could not be translated.\n",
+            GENERAL_ERROR: "An error occurred. Please check the console: F12 (Firefox) or Ctrl+Shift+J (Chrome).\n"
+        };
+
+        // Maximum amount of players in an Overwatch match
+        const MAX_PLAYERS = 12;
+
+
+        function loadFile() {
+            let file = document.getElementById("file-input").files[0];
+            if (!file) {
+                return;
+            }
+
+            updateElementValue("scriptOutput-textarea", "");
+            updateElementValue("ruleOutput-textarea", "");
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                try {
+                    // Read MIDI file with Tonejs/Midi
+                    let mid = new Midi(event.target.result);
+                    parseMidi(mid);
+                }
+                catch (error) {
+                    updateElementValue("scriptOutput-textarea", ERRORS["GENERAL_ERROR"]);
+                    console.error(error);
+                }
+            }
+            reader.readAsArrayBuffer(file);
+        }
+        
+
+        function parseMidi(mid) {
+            // Converts MIDI data, outputs it
+
+            const converterSettings = getConverterSettings();
+            let convertedMidi = {};
+            
+            try {
+                convertedMidi = convertMidi(mid, converterSettings, true);
+            }
+            catch (error) {
+                updateElementValue("scriptOutput-textarea", ERRORS["MIDI_CONVERTER_ERROR"]);
+                console.error(error);
+                return;
+            }
+
+            if (convertedMidi.rules == "") {
+                let output = "";
+                for (let error of convertedMidi.errors) {
+                    output += error;
+                } 
+                for (let warning of convertedMidi.warnings) {
+                    output += warning;
+                } 
+                updateElementValue("scriptOutput-textarea", output);
+
+            } else {
+                let scriptLanguage = document.getElementById("languageInput").value;
+                let customGameSettings = "";
+
+                if (document.getElementById("includeFullSettingsCheckBox").checked) {
+                    // Add BASE_SETTINGS
+                    customGameSettings += generateIngameSettings(converterSettings["voices"]);
+                } else {
+                    // Only add variables used in the converted midi script
+                    customGameSettings += CONVERTED_MIDI_VARS;
+                }
+
+                customGameSettings += convertedMidi.rules;
+
+                if (scriptLanguage != "en-US") {
+                    customGameSettings = translateWorkshopScript(customGameSettings, scriptLanguage);
+                }
+                
+                let scriptOutput = "";
+                scriptOutput += `${convertedMidi.skippedNotes} note(s) left out due to too many overlapping pitches\n` +
+                                `${convertedMidi.transposedNotes} note(s) transposed\n` +
+                                `${converterSettings["voices"]} voice(s)\n\n`;
+                
+                if (convertedMidi.warnings.length != 0) {
+                    for (let warning of convertedMidi.warnings) {
+                        scriptOutput += warning;
+                    } 
+                }
+
+                scriptOutput += `MIDI file successfully read from ${converterSettings["startTime"]} second(s) ` +
+                                `to ${roundToPlaces(convertedMidi.stopTime, 1)} second(s),\n` +
+                                `${Math.round(100*(convertedMidi.stopTime - converterSettings["startTime"]) / convertedMidi.duration)}% ` +
+                                `of the song converted to workshop arrays.\n` +
+                                `Language: ${scriptLanguage}\n`;
+
+                updateElementValue("scriptOutput-textarea", scriptOutput);
+                updateElementValue("ruleOutput-textarea", customGameSettings + "\n");
+            }
+        }
+
+        
+        function getConverterSettings() {
+            // Reads the values in the webpage input fields, 
+            // ensures that they're in the correct numerical ranges
+
+            let userSettings = {};
+
+            for (let setting in CONVERTER_SETTINGS_INFO) {
+
+                let userValue = parseFloat(document.getElementById(setting + "Input").value);
+
+                if (isNaN(userValue)) {
+                    userValue = CONVERTER_SETTINGS_INFO[setting]["DEFAULT"];
+                }
+
+                else if (userValue < CONVERTER_SETTINGS_INFO[setting]["MIN"]) {
+                    userValue = CONVERTER_SETTINGS_INFO[setting]["MIN"];
+                }
+
+                else if (userValue > CONVERTER_SETTINGS_INFO[setting]["MAX"]) {
+                    userValue = CONVERTER_SETTINGS_INFO[setting]["MAX"];
+                }
+
+                document.getElementById(setting + "Input").value = userValue;
+                userSettings[setting] = userValue;
+            }
+
+            return userSettings;
+        }
+        
+
+        function generateIngameSettings(maxBots) {
+            // Modifies BASE_SETTINGS based on the user's selected settings, 
+            // and returns the modified script.
+
+            const userSettings = {
+                botsInvisible: document.getElementById("botsInvisibleCheckbox").checked,
+                restrictSlots: document.getElementById("restrictSlotsCheckbox").checked,
+                selectedPiano: document.getElementById("pianoSelectInput").value,
+                restrictAbilities: document.getElementById("restrictAbilitiesCheckbox").checked,
+                includeBanSystem: document.getElementById("includeBanSystemCheckbox").checked
+            };
+
+            let customGameSettings = BASE_SETTINGS;
+
+            if (!userSettings.botsInvisible) {
+                customGameSettings = customGameSettings.replace(SCRIPTS["botsInvisible"], "");
+            }
+
+            if (userSettings.restrictSlots) {
+                customGameSettings = customGameSettings.replace(SCRIPTS["restrictSlots"], 
+                                                                `Max Team 1 Players: ${MAX_PLAYERS - maxBots}`)
+            }
+            
+            customGameSettings += PIANO_POSITION_SCRIPTS[userSettings.selectedPiano];
+            
+            if (!userSettings.restrictAbilities) {
+                customGameSettings = customGameSettings.replace(SCRIPTS["restrictAbilities"], "");
+            }
+            
+            if (!userSettings.includeBanSystem) {
+                customGameSettings = customGameSettings.replace(SCRIPTS["includeBanSystem"], "");
+            }
+            return customGameSettings;
+            
+        }
+
+        function translateWorkshopScript(script, language) {
+            // Translates by decompiling to OverPy script, 
+            // then compiling back to workshop script in the selected language
+
+            try {
+                let overpyScript = decompileAllRules(script);
+
+                return compile(overpyScript, language).result;
+            }
+            catch (error) {
+                updateElementValue("scriptOutput-textarea", ERRORS["TRANSLATION_ERROR"]);
+                console.error(error);
+            }
+        }
+
+            
+        function copyText(elementId) {
+            // Copy to clipboard
+            document.getElementById(elementId).select();
+            document.execCommand("copy");
+        }
+        
+        function collapseElementAfter(element1) {
+            // Toggles the visibility of the element after element1, switches "+" with "–"
+
+            let collapsibleElement = element1.nextElementSibling;
+            
+            if (collapsibleElement.style.display === "block") {
+                collapsibleElement.style.display = "none";
+                element1.innerHTML = element1.innerHTML.replace("–", "+")
+            } else {
+                collapsibleElement.style.display = "block";
+                element1.innerHTML = element1.innerHTML.replace("+", "–")
+            }
+        }
+
+        function updateElementValue(elementId, newValue, keepOldText = false) {
+            // Updates text in a webpage element.
+
+            let outputText = "";
+            let oldValue = document.getElementById(elementId).value;
+
+            if (keepOldText) {
+                outputText = oldValue + newValue;
+            } else {
+                outputText = newValue;
+            }
+            document.getElementById(elementId).value = outputText;
+        }
+    </script>
+</body>
+
+</html>

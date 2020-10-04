@@ -1,0 +1,77 @@
+textarea {
+    resize: vertical;
+    width: 100%;
+}
+body, textarea {
+    color: #CCCCCC;
+    background-color: #222222;
+}
+a {
+    color: lightblue;
+}
+
+.center {
+    width: 45%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.textInput, .checkboxInput {
+    width: 40px;
+    height: 16px;
+    text-align: center;
+}
+.dropdownInput {
+    width: 100px;
+    height: 22px;
+    text-align: center;
+}
+
+.tooltipWrapper {
+    justify-self: right;
+    border-bottom: 10px solid transparent;
+    border-right: 5px solid transparent;
+}
+.tooltip {
+    position: relative;
+    border-bottom: 1px dotted white;
+}
+.tooltipText {
+    visibility: hidden;
+    width: 250px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    right: 105%;
+}
+.tooltip:hover .tooltipText {
+    visibility: visible;
+}
+
+#collapseButton {
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: lightblue;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+} 
+.collapsible {
+    display: none;
+}
+
+#scriptOutput-textarea {
+    margin-bottom: 20px;
+}
